@@ -30,6 +30,7 @@ class RoomList extends Component {
      })
      const newRoom = { name: this.state.newRoomName };
      this.setState({ rooms: [...this.state.rooms, newRoom], newRoom: '' })
+     this.setState({ newRoomName: ''})
    }
 
     render() {
