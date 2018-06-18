@@ -26,7 +26,8 @@ class RoomList extends Component {
      e.preventDefault();
      if (!this.state.newRoomName) { return }
      this.roomsRef.push({
-       name: newRoomName
+       name: newRoomName,
+       key: this.state.rooms.length
      })
      const newRoom = { name: this.state.newRoomName };
      this.setState({ rooms: [...this.state.rooms, newRoom], newRoom: '' })
@@ -38,9 +39,9 @@ class RoomList extends Component {
         <section className="rooms">
           <div className="room-list">
           {
-            this.state.rooms.map( (room, key) => {
+            this.state.rooms.map( (room, index) => {
               return (
-                <div key={room.key}>
+                <div key={index}>
                   {room.name}
                 </div>
               )
