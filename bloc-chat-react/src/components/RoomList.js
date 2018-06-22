@@ -37,11 +37,16 @@ class RoomList extends Component {
     render() {
       return (
         <section className="rooms">
+
+          <label>
+            Rooms:
+          </label>
+
           <div className="room-list">
           {
             this.state.rooms.map( (room, index) => {
               return (
-                <div key={index}>
+                <div key={index} onClick={ () => this.props.selectedRoom(room) }>
                   {room.name}
                 </div>
               )
@@ -52,7 +57,6 @@ class RoomList extends Component {
             <input
               type="text"
               value={ this.state.newRoomName }
-              prompt="Please enter a room name."
               onChange={ this.handleAddRoom.bind(this) }
             />
             <input type="submit" value="Create Room" />
