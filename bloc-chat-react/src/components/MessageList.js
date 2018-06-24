@@ -1,71 +1,44 @@
 import React, { Component } from 'react';
 
-
 class MessageList extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      message: '',
-      messages: []
-    }
-    this.messagesRef = this.props.firebase.database().ref('messages');
-   }
+     messages: []
+};
+this.messagesRef = this.props.firebase.database().ref('Messages');
+};
 
-   componentDidMount() {
-     this.messagesRef.on('child_added', snapshot => {
-       const message = { name: snapshot.val().name, key: snapshot.key }
-       this.setState({ messages: this.state.messages.concat( message ) });
+componentDidMount() {
+    this.messagesRef.on('child_added', snapshot => {
+      const message = snapshot.val();
+      console.log(message);
+      message.key = snapshot.key;
+      this.setState({ messages: this.state.messages.concat( message ) })
+      console.log(this.state.messages);
      });
-   }
-
-   handleChange(e) {
-     this.setState({ message: e.target.value });
-   }
-
-   handleSubmit(e) {
-     e.preventDefault();
-     if (this.state.message) {
-     this.messagesRef.push({
-       username: this.state.username,
-       content: this.state.message,
-       sentAt: Date.now(),
-       roomId: this.state.activeRoom.name
-     })
-     this.setState({ message: ''});
-   }
-
-   render() {
-     return (
-       <section className="messages">
-
-         <label>
-          Messages:
-         </label>
-
-         <div className="message-list">
-         {
-           this.state.rooms.map( (message, index) => {
-             return (
-               <div key={index}>
-                 {message.username} : {message.content} : {message.sentAt} : {message.roomId}
-               </div>
-             )
-           })
-         }
-         </div>
-         <form onSubmit={ (e) => this.handleSubmit(e) }>
-           <input
-             type="text"
-             value={ this.state.message }
-             onChange={ this.handleChange.bind(this) }
-           />
-           <button type="submit" value="Submit" />
-         </form>
-       </section>
-     );
-   }
-
 }
+
+render() {
+    return (
+      <section className="messages">
+      <label>
+        Messages:
+      </label>
+        <div className="message-list">
+          {
+            this.state.messages.filter(message => message.roomId === this.props.activeRoom.key).map( (message, index) => {
+                return (
+                <div key={index}>
+                  {message.username}: {message.content} | Sent at: {message.sentAt}
+                </div>
+              )}
+          )}
+        </div>
+      </section>
+    )
+  }
+}
+
 
 export default MessageList;

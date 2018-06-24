@@ -16,7 +16,7 @@ var config = {
 
 
 class App extends Component {
-  constructor {
+  constructor(props) {
     super(props);
     this.state = {
       rooms: [],
@@ -27,6 +27,7 @@ class App extends Component {
   }
 
   selectedRoom(room) {
+    console.log(room);
     this.setState({ activeRoom: room });
   }
 
@@ -36,8 +37,13 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Bloc Chat</h1>
         </header>
-        <RoomList  firebase={firebase} activeRoom={this.activeRoom} selectedRoom={this.selectedRoom} />
-        <MessageList firebase={firebase} activeRoom={this.activeRoom} />
+        <div>
+          <RoomList  firebase={firebase} activeRoom={this.state.activeRoom} selectedRoom={this.selectedRoom} />
+        </div>
+        <div >
+          <MessageList firebase={firebase} activeRoom={this.state.activeRoom} />
+        </div>
+
       </div>
     );
   }

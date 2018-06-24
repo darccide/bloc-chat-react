@@ -37,11 +37,9 @@ class RoomList extends Component {
     render() {
       return (
         <section className="rooms">
-
-          <label>
-            Rooms:
-          </label>
-
+        <label>
+          Rooms:
+        </label>
           <div className="room-list">
           {
             this.state.rooms.map( (room, index) => {
