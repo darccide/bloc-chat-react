@@ -4,7 +4,11 @@ class MessageList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-     messages: []
+     messages: [],
+     username: '',
+     content: '',
+     sentAt: '',
+     roomId: ''
 };
 this.messagesRef = this.props.firebase.database().ref('Messages');
 };
@@ -15,8 +19,33 @@ componentDidMount() {
       console.log(message);
       message.key = snapshot.key;
       this.setState({ messages: this.state.messages.concat( message ) })
-      console.log(this.state.messages);
      });
+}
+
+handleMessage(e) {
+  e.preventDefault();
+  this.messagesRef.push({
+    username: this.state.username,
+    content: this.state.content,
+    sentAt: this.state.sentAt,
+    roomId: this.state.roomId
+  });
+  this.setState({
+    username: '',
+    content: '',
+    sentAt: '',
+    roomId: ''
+  });
+}
+
+handleChange(e) {
+  e.preventDefault();
+  this.setState({
+    username: !this.props.user ? 'Guest' : this.props.user.displayName,
+    content: e.target.value,
+    sentAt: new Date().toISOString().slice(0,10),
+    roomId: this.props.activeRoom.key
+  })
 }
 
 render() {
@@ -35,8 +64,16 @@ render() {
               )}
           )}
         </div>
+
+        <form onSubmit={ (e) => this.handleMessage(e) }>
+          <input type="text"
+            value={ this.state.content }
+            onChange={ (e) => this.handleChange(e) }
+          />
+          <input type="submit" value="Send"/>
+        </form>
       </section>
-    )
+    );
   }
 }
 
