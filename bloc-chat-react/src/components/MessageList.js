@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+
+var moment = require('moment');
 class MessageList extends Component {
   constructor(props) {
     super(props);
@@ -16,11 +18,10 @@ this.messagesRef = this.props.firebase.database().ref('Messages');
 componentDidMount() {
     this.messagesRef.on('child_added', snapshot => {
       const message = snapshot.val();
-      console.log(message);
       message.key = snapshot.key;
       this.setState({ messages: this.state.messages.concat( message ) })
      });
-}
+};
 
 handleMessage(e) {
   e.preventDefault();
@@ -43,7 +44,7 @@ handleChange(e) {
   this.setState({
     username: !this.props.user ? 'Guest' : this.props.user.displayName,
     content: e.target.value,
-    sentAt: new Date().toISOString().slice(0,10),
+    sentAt: moment().format('LT'),
     roomId: this.props.activeRoom.key
   })
 }
