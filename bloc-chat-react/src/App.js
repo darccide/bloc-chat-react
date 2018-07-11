@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
 import './App.css';
+import * as firebase from 'firebase';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
 import User from './components/User';
@@ -13,46 +13,60 @@ var config = {
     storageBucket: "bloc-chat-react-1.appspot.com",
     messagingSenderId: "496017182197"
   };
-  firebase.initializeApp(config);
-
+firebase.initializeApp(config);
 
 class App extends Component {
-  constructor(props) {
+  constructor(props){
     super(props);
     this.state = {
-      rooms: [],
-      messages: [],
-      activeRoom: '',
-      user: '',
-    }
-    this.selectedRoom = this.selectedRoom.bind(this);
-    this.setUser = this.setUser.bind(this);
+      activeRoom: "",
+      user:""
+    };
   }
 
-  selectedRoom(room) {
-    this.setState({ activeRoom: room });
+  changeActiveRoom(room){
+    this.setState({ activeRoom: room })
+
   }
 
   setUser(user) {
     this.setState({ user: user });
+
   }
 
   render() {
+
     return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">Bloc Chat</h1>
         </header>
-        <div>
-          <RoomList  firebase={firebase} activeRoom={this.state.activeRoom} selectedRoom={this.selectedRoom} />
-        </div>
-        <div >
-          <MessageList firebase={firebase} activeRoom={this.state.activeRoom} user={this.state.user} />
-        </div>
-        <div>
-          <User firebase={firebase} user={this.state.user} setUser={ (user) => this.setUser(user) } />
-        </div>
-
+          <div>
+            <div className="rooms-list">
+                <h3>Rooms:</h3>
+              <div>
+                <RoomList
+                  firebase={firebase}
+                  activeRoom={ this.state.activeRoom }
+                  changeActiveRoom={ (room) => this.changeActiveRoom(room) }
+                />
+            </div>
+            </div>
+            <div className="message-list">
+              <div>
+              <MessageList
+                firebase={firebase}
+                activeRoom={ this.state.activeRoom }
+                user={ this.state.user }
+              />
+              <User
+                firebase={ firebase }
+                user={ this.state.user }
+                setUser={ (user) => this.setUser(user) }
+              />
+              </div>
+            </div>
+          </div>
       </div>
     );
   }
