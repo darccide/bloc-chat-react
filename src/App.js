@@ -1,26 +1,99 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import * as firebase from 'firebase';
+import RoomList from './components/RoomList';
+import MessageList from './components/MessageList';
+import User from './components/User';
+import { Grid, AppBar, Toolbar, Typography } from '@material-ui/core';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { deepOrange, green } from '@material-ui/core/colors';
+
+require('dotenv').config();
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'light',
+    primary: green,
+    secondary: deepOrange
+  }
+});
+
+const config = {
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
+};
+firebase.initializeApp(config);
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeRoom: '',
+      user: ''
+    };
+  }
+
+  selectRoom(room) {
+    this.setState({
+      activeRoom: room
+    });
+  }
+
+  setUser(user) {
+    this.setState({
+      user: user
+    });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <MuiThemeProvider theme={theme}>
+        <Grid className="App">
+          <Grid justify="flex-start" container spacing={8}>
+            <AppBar position="static" color="primary">
+              <Toolbar>
+                <Typography variant="title" color="inherit" aria-label="Menu">
+                  Bloc Chat
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            {/* ROOM LIST AREA */}
+            <Grid item xs={12} md={3} className="leftArea">
+              <User
+                firebase={firebase}
+                setUser={this.setUser.bind(this)}
+                currentUser={
+                  this.state.user === null
+                    ? 'Guest'
+                    : this.state.user.displayName
+                }
+                user={this.state.user}
+              />
+              <RoomList
+                firebase={firebase}
+                activeRoom={this.state.activeRoom}
+                selectRoom={room => this.selectRoom(room)}
+              />
+            </Grid>
+            {/* CHAT AREA */}
+            <Grid item xs={12} md={9} className="rightArea">
+              <MessageList
+                firebase={firebase}
+                activeRoom={this.state.activeRoom}
+                currentUser={
+                  this.state.user === null
+                    ? 'Guest'
+                    : this.state.user.displayName
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </MuiThemeProvider>
     );
   }
 }
